@@ -114,11 +114,11 @@ module.exports = mongoose.model('User', userSchema);
 
 // routes/farmRoutes.js
 const express = require('express');
-const router = express.Router();
+const farmRouter = express.Router();
 const Farm = require('../models/Farm');
 const authMiddleware = require('../middleware/authMiddleware');
 
-router.get('/', async (req, res) => {
+farmRouter.get('/', async (req, res) => {
   try {
     const { date } = req.query;
     const farms = await Farm.find();
@@ -164,15 +164,15 @@ router.delete('/:id', authMiddleware, async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = farmRouter;
 
 // routes/bookingRoutes.js
 const express = require('express');
-const router = express.Router();
+const bookingRouter = express.Router();
 const Booking = require('../models/Booking');
 const { sendConfirmationEmail } = require('../utils/emailService');
 
-router.post('/', async (req, res) => {
+bookingRouter.post('/', async (req, res) => {
   try {
     const newBooking = new Booking(req.body);
     await newBooking.save();
@@ -183,16 +183,16 @@ router.post('/', async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = bookingRouter;
 
 // routes/authRoutes.js
 const express = require('express');
-const router = express.Router();
+const authRouter = express.Router();
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-router.post('/register', async (req, res) => {
+authRouter.post('/register', async (req, res) => {
   try {
     const { email, password, role } = req.body;
     const user = new User({ email, password, role });
