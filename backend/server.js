@@ -106,6 +106,10 @@ userSchema.pre('save', async function(next) {
   next();
 });
 
+userSchema.methods.comparePassword = async function(candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
+};
+
 module.exports = mongoose.model('User', userSchema);
 
 // routes/farmRoutes.js
@@ -193,7 +197,8 @@ router.post('/register', async (req, res) => {
     const { email, password, role } = req.body;
     const user = new User({ email, password, role });
     await user.save();
-    res.status(201).json({ message: 'User registered successfully' });
+    const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.status(201).json({ token, userId: user._id, role: user.role });
   } catch (error) {
     res.status(400).json({ message: 'Error registering user', error: error.message });
   }
@@ -207,7 +212,7 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
     const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.json({ token });
+    res.json({ token, userId: user._id, role: user.role });
   } catch (error) {
     res.status(500).json({ message: 'Error logging in', error: error.message });
   }
