@@ -5,12 +5,20 @@
         "start": "node backend/server.js",
         "server": "nodemon backend/server.js",
         "client": "npm start --prefix frontend",
-        "dev": "concurrently \"npm run server\" \"npm run client\""
+        "dev": "concurrently \"npm run server\" \"npm run client\"",
+        "build": "npm run build --prefix frontend"  // Add this line
     },
     "dependencies": {
         "bcryptjs": "^2.4.3",
         "concurrently": "^6.2.0",
-        "jsonwebtoken": "^9.0.2"
+        "jsonwebtoken": "^9.0.2",
+        "axios": "^1.7.7",  // Add frontend dependencies
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
+        "react-router-dom": "^6.26.2",
+        "react-scripts": "5.0.1",
+        "styled-components": "^6.1.13",
+        "web-vitals": "^2.1.4"
     },
     "devDependencies": {
         "@types/express": "^5.0.0"
