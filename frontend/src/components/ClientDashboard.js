@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import FarmCard from './FarmCard';
 
 const ClientDashboard = () => {
@@ -24,7 +25,8 @@ const ClientDashboard = () => {
 
     return (
         <div>
-            <h2>Client Dashboard</h2>
+            <h2>Book a Farm</h2>
+            <Link to="/" className="back-button">Back to Home</Link>
             <input
                 type="date"
                 value={date}

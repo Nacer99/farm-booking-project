@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const FarmManagerDashboard = () => {
     const [farms, setFarms] = useState([]);
     const [newFarm, setNewFarm] = useState({ name: '', description: '', menus: [] });
 
-    // Use useEffect to fetch farms when the component mounts
     useEffect(() => {
         fetchFarms();
-    }, []); // Empty dependency array means this runs once when the component mounts
+    }, []);
 
     const fetchFarms = async () => {
         const response = await fetch('/api/farms');
@@ -30,6 +30,7 @@ const FarmManagerDashboard = () => {
     return (
         <div>
             <h2>Farm Manager Dashboard</h2>
+            <Link to="/" className="back-button">Back to Home</Link>
             <h3>Add New Farm</h3>
             <input
                 type="text"
