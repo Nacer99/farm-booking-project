@@ -1,0 +1,41 @@
+.add-new-farm {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.add-new-farm form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.add-new-farm input[type="text"],
+.add-new-farm input[type="number"],
+.add-new-farm textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.meal-section {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.submit-button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.submit-button:hover {
+    background-color: #45a049;
+}
