@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import '../styles/FarmManagerDashboard.css';
 
 const FarmManagerDashboard = () => {
+    console.log("Rendering FarmManagerDashboard");
     return (
         <div className="farm-manager-dashboard">
             <h2>Farm Manager Dashboard</h2>
