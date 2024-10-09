@@ -4,6 +4,11 @@ const FarmManagerDashboard = () => {
     const [farms, setFarms] = useState([]);
     const [newFarm, setNewFarm] = useState({ name: '', description: '', menus: [] });
 
+    // Use useEffect to fetch farms when the component mounts
+    useEffect(() => {
+        fetchFarms();
+    }, []); // Empty dependency array means this runs once when the component mounts
+
     const fetchFarms = async () => {
         const response = await fetch('/api/farms');
         const data = await response.json();
@@ -37,7 +42,6 @@ const FarmManagerDashboard = () => {
                 value={newFarm.description}
                 onChange={(e) => setNewFarm({ ...newFarm, description: e.target.value })}
             />
-            {/* Add inputs for menus */}
             <button onClick={handleAddFarm}>Add Farm</button>
             <div className="farm-list">
                 {farms.map((farm) => (
