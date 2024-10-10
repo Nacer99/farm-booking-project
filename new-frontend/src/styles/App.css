@@ -1,15 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-:root {
-  --primary-green: #4CAF50;
-  --light-green: #8BC34A;
-  --dark-green: #45a049;
-  --white: #FFFFFF;
-  --off-white: #F5F5F5;
-  --light-gray: #E0E0E0;
-  --dark-gray: #333333;
-}
-
 body {
   font-family: 'Roboto', sans-serif;
   background-color: var(--off-white);
