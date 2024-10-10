@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import '../styles/FarmPage.css';
 
 const FarmPage = () => {
   const { id } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const date = new URLSearchParams(location.search).get('date');
   const [farm, setFarm] = useState(null);
   const [selectedMeals, setSelectedMeals] = useState({});
@@ -42,9 +43,31 @@ const FarmPage = () => {
     }));
   };
 
-  const handleBooking = () => {
-    // TODO: Implement booking logic
-    console.log("Booking:", { farmId: id, date, meals: selectedMeals, total });
+  const handleBooking = async () => {
+    try {
+      // Send booking data to your API
+      const response = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ farmId: id, date, meals: selectedMeals, total }),
+      });
+
+      if (response.ok) {
+        // Redirect to a confirmation page
+        navigate('/booking-confirmation');
+      } else {
+        // Handle errors
+        console.error('Booking failed');
+        // TODO: Show an error message to the user
+        alert('Booking failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error during booking:', error);
+      // TODO: Show an error message to the user
+      alert('An error occurred during booking. Please try again.');
+    }
   };
 
   if (!farm) return <div>Loading...</div>;
