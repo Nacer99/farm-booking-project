@@ -7,22 +7,41 @@ const EditFarm = () => {
 
   useEffect(() => {
     // TODO: Fetch farms from your API
-    // For now, let's just set some dummy farms
+    // For now, we'll use dummy data
     setFarms([
-      { id: 1, name: "Farm 1" },
-      { id: 2, name: "Farm 2" },
-      { id: 3, name: "Farm 3" },
+      { id: 1, name: "Green Acres Farm" },
+      { id: 2, name: "Sunset Valley Ranch" },
+      { id: 3, name: "Mountain View Orchard" },
     ]);
   }, []);
 
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this farm?")) {
+      try {
+        // TODO: Send delete request to your API
+        // For now, we'll just remove it from the local state
+        setFarms(farms.filter(farm => farm.id !== id));
+        // In a real application, you'd make an API call here:
+        // await api.deleteFarm(id);
+        console.log(`Farm with id ${id} deleted`);
+      } catch (error) {
+        console.error("Error deleting farm:", error);
+        // Handle error (e.g., show error message to user)
+      }
+    }
+  };
+
   return (
     <div className="edit-farm">
-      <h2>Edit a Farm</h2>
+      <h2>Edit or Delete a Farm</h2>
       <ul className="farm-list">
         {farms.map(farm => (
           <li key={farm.id}>
             <span>{farm.name}</span>
-            <Link to={`/edit-farm/${farm.id}`}>Edit</Link>
+            <div className="farm-actions">
+              <Link to={`/edit-farm/${farm.id}`} className="edit-button">Edit</Link>
+              <button onClick={() => handleDelete(farm.id)} className="delete-button">Delete</button>
+            </div>
           </li>
         ))}
       </ul>
