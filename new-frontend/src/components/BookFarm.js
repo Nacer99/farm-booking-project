@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../styles/BookFarm.css';
@@ -10,17 +11,10 @@ const BookFarm = () => {
   const onDateChange = (newDate) => {
     setDate(newDate);
     // TODO: Fetch available farms for this date from your API
-    // For now, let's just set a dummy farm
     setAvailableFarms([
-      {
-        id: 1,
-        name: "Sample Farm",
-        description: "A beautiful farm",
-        photos: ["https://via.placeholder.com/150"],
-        meals: [
-          { id: 1, name: "Breakfast", description: "Delicious breakfast", price: 50, availability: 10 }
-        ]
-      }
+      { id: 1, name: "Green Acres Farm", photo: "https://example.com/farm1.jpg" },
+      { id: 2, name: "Sunset Valley Ranch", photo: "https://example.com/farm2.jpg" },
+      // Add more dummy farms as needed
     ]);
   };
 
@@ -31,18 +25,10 @@ const BookFarm = () => {
       <div className="available-farms">
         {availableFarms.map(farm => (
           <div key={farm.id} className="farm-card">
-            <h3>{farm.name}</h3>
-            <img src={farm.photos[0]} alt={farm.name} />
-            <p>{farm.description}</p>
-            <h4>Menus:</h4>
-            {farm.meals.map(meal => (
-              <div key={meal.id} className="meal">
-                <h5>{meal.name}</h5>
-                <p>{meal.description}</p>
-                <p>Price: {meal.price} MAD</p>
-                <p>Available: {meal.availability}</p>
-              </div>
-            ))}
+            <Link to={`/farm/${farm.id}?date=${date.toISOString()}`}>
+              <h3>{farm.name}</h3>
+              <img src={farm.photo} alt={farm.name} />
+            </Link>
           </div>
         ))}
       </div>

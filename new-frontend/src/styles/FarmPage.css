@@ -1,0 +1,38 @@
+.farm-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .farm-page img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .meal-option {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+  }
+  
+  .booking-summary {
+    margin-top: 20px;
+    text-align: right;
+  }
+  
+  .booking-summary button {
+    background-color: var(--primary-green);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .booking-summary button:hover {
+    background-color: var(--dark-green);
+  }
