@@ -10,7 +10,18 @@ const BookFarm = () => {
   const onDateChange = (newDate) => {
     setDate(newDate);
     // TODO: Fetch available farms for this date from your API
-    // setAvailableFarms(fetchedFarms);
+    // For now, let's just set a dummy farm
+    setAvailableFarms([
+      {
+        id: 1,
+        name: "Sample Farm",
+        description: "A beautiful farm",
+        photos: ["https://via.placeholder.com/150"],
+        meals: [
+          { id: 1, name: "Breakfast", description: "Delicious breakfast", price: 50, availability: 10 }
+        ]
+      }
+    ]);
   };
 
   return (

@@ -7,8 +7,12 @@ const EditFarm = () => {
 
   useEffect(() => {
     // TODO: Fetch farms from your API
-    // const fetchedFarms = await api.getFarms();
-    // setFarms(fetchedFarms);
+    // For now, let's just set some dummy farms
+    setFarms([
+      { id: 1, name: "Farm 1" },
+      { id: 2, name: "Farm 2" },
+      { id: 3, name: "Farm 3" },
+    ]);
   }, []);
 
   return (
