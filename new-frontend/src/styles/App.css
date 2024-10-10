@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+:root {
+  --primary-green: #4CAF50;
+  --light-green: #8BC34A;
+  --dark-green: #45a049;
+  --white: #FFFFFF;
+  --off-white: #F5F5F5;
+  --light-gray: #E0E0E0;
+  --dark-gray: #333333;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--off-white);
+  color: var(--dark-gray);
+  margin: 0;
+  padding: 0;
+}
+
+.App {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--primary-green);
+}
+
+button, .button {
+  background-color: var(--primary-green);
+  color: var(--white);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover, .button:hover {
+  background-color: var(--dark-green);
+}
+
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid var(--light-gray);
+  border-radius: 5px;
+}
+
+.back-button {
+  display: inline-block;
+  margin-top: 20px;
+  text-decoration: none;
+  color: var(--primary-green);
+}
