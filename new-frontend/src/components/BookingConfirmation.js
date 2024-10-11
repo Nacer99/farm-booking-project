@@ -1,17 +1,55 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/BookingConfirmation.css';
 
 const BookingConfirmation = () => {
+  const [email, setEmail] = useState('');
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { totalMeals, bookedMeals, farmName, bookingDate } = location.state || {};
+
+  const handleEmailSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // TODO: Implement API call to send confirmation email
+      const response = await fetch('/api/send-confirmation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, totalMeals, bookedMeals, farmName, bookingDate }),
+      });
+
+      if (response.ok) {
+        alert('Confirmation email sent successfully!');
+        navigate('/');  // Redirect to home page after sending email
+      } else {
+        alert('Failed to send confirmation email. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error sending confirmation email:', error);
+      alert('An error occurred while sending the confirmation email. Please try again.');
+    }
+  };
+
   return (
     <div className="booking-confirmation">
-      <h2>Booking Confirmed!</h2>
-      <p>Thank you for your booking. We're excited to host you at the farm!</p>
-      <p>You will receive a confirmation email shortly with all the details of your booking.</p>
-      <div className="confirmation-actions">
-        <Link to="/" className="home-button">Return to Home</Link>
-        <Link to="/book" className="book-again-button">Book Another Farm</Link>
-      </div>
+      <h2>Booking Confirmation</h2>
+      <p>
+        Nous vous confirmons la réservation de {totalMeals} "{bookedMeals}" 
+        chez "{farmName}" le {new Date(bookingDate).toLocaleDateString()}.
+      </p>
+      <p>Pour recevoir votre confirmation par email, merci de renseigner votre adresse email ci-dessous.</p>
+      <form onSubmit={handleEmailSubmit} className="email-form">
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Votre adresse email"
+          required
+        />
+        <button type="submit">Envoyer</button>
+      </form>
     </div>
   );
 };

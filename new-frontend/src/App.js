@@ -7,7 +7,6 @@ import BookingConfirmation from './components/BookingConfirmation';
 import FarmManagerDashboard from './components/FarmManagerDashboard';
 import AddNewFarm from './components/AddNewFarm';
 import EditFarm from './components/EditFarm';
-import FarmEditForm from './components/FarmEditForm';
 import './styles/App.css';
 
 function App() {
@@ -22,7 +21,7 @@ function App() {
           <Route path="/manager" element={<FarmManagerDashboard />} />
           <Route path="/add-farm" element={<AddNewFarm />} />
           <Route path="/edit-farm" element={<EditFarm />} />
-          <Route path="/edit-farm/:id" element={<FarmEditForm />} />
+          <Route path="/edit-farm/:id" element={<EditFarm />} />
         </Routes>
       </div>
     </Router>

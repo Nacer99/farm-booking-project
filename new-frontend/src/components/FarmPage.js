@@ -55,17 +55,30 @@ const FarmPage = () => {
       });
 
       if (response.ok) {
-        // Redirect to a confirmation page
-        navigate('/booking-confirmation');
+        // Calculate total number of meals
+        const totalMeals = Object.values(selectedMeals).reduce((sum, quantity) => sum + quantity, 0);
+        
+        // Get names of booked meals
+        const bookedMeals = farm.meals
+          .filter(meal => selectedMeals[meal.id] > 0)
+          .map(meal => meal.name)
+          .join(", ");
+
+        // Redirect to confirmation page with booking details
+        navigate('/booking-confirmation', { 
+          state: { 
+            totalMeals, 
+            bookedMeals, 
+            farmName: farm.name, 
+            bookingDate: date 
+          } 
+        });
       } else {
-        // Handle errors
         console.error('Booking failed');
-        // TODO: Show an error message to the user
         alert('Booking failed. Please try again.');
       }
     } catch (error) {
       console.error('Error during booking:', error);
-      // TODO: Show an error message to the user
       alert('An error occurred during booking. Please try again.');
     }
   };
