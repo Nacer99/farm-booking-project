@@ -1,9 +1,7 @@
-// server.js
 require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
-app.use(cors({ origin: process.env.FRONTEND_URL }));
+const mongoose = require('mongoose');
 const farmRoutes = require('./routes/farmRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const authRoutes = require('./routes/authRoutes');
@@ -11,7 +9,7 @@ const authRoutes = require('./routes/authRoutes');
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: process.env.FRONTEND_URL }));
 app.use(express.json());
 
 // Connect to MongoDB
