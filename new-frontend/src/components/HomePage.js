@@ -1,3 +1,4 @@
+import { API_URL } from '../config';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/HomePage.css';
