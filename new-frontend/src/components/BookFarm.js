@@ -6,6 +6,33 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../styles/BookFarm.css';
 
+import { API_URL } from '../config';
+import { useState, useEffect } from 'react';
+
+function BookFarm() {
+  const [farms, setFarms] = useState([]);
+
+  const fetchAvailableFarms = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/farms/available`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch available farms');
+      }
+      const data = await response.json();
+      setFarms(data);
+    } catch (error) {
+      console.error('Error fetching available farms:', error);
+      // Handle error (e.g., show error message to user)
+    }
+  };
+
+  useEffect(() => {
+    fetchAvailableFarms();
+  }, []);
+
+  // Rest of your component code...
+}
+
 const BookFarm = () => {
   const [date, setDate] = useState(new Date());
   const [availableFarms, setAvailableFarms] = useState([]);

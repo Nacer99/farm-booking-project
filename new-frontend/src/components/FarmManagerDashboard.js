@@ -4,6 +4,37 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/FarmManagerDashboard.css';
 
+import { API_URL } from '../config';
+import { useState, useEffect } from 'react';
+
+function FarmManagerDashboard() {
+  const [farms, setFarms] = useState([]);
+
+  const fetchManagerFarms = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/farms/manager`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch manager farms');
+      }
+      const data = await response.json();
+      setFarms(data);
+    } catch (error) {
+      console.error('Error fetching manager farms:', error);
+      // Handle error
+    }
+  };
+
+  useEffect(() => {
+    fetchManagerFarms();
+  }, []);
+
+  // Rest of your component code...
+}
+
 const FarmManagerDashboard = () => {
   return (
     <div className="farm-manager-dashboard">

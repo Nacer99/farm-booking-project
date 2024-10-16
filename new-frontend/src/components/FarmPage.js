@@ -4,6 +4,45 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import '../styles/FarmPage.css';
 
+const fetchFarmDetails = async () => {
+  try {
+    const response = await fetch(`${API_URL}/api/farms/${id}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch farm details');
+    }
+    const data = await response.json();
+    setFarm(data);
+  } catch (error) {
+    console.error('Error fetching farm details:', error);
+    // Handle error
+  }
+};
+
+const createBooking = async () => {
+  try {
+    const response = await fetch(`${API_URL}/api/bookings`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        farmId: id,
+        date: selectedDate,
+        meals: selectedMeals,
+        totalAmount: calculateTotalAmount(),
+      }),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to create booking');
+    }
+    const data = await response.json();
+    // Handle successful booking (e.g., redirect to confirmation page)
+  } catch (error) {
+    console.error('Error creating booking:', error);
+    // Handle error
+  }
+};
+
 const FarmPage = () => {
   const { id } = useParams();
   const location = useLocation();

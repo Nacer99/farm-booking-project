@@ -4,6 +4,28 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/AddNewFarm.css';
 
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await fetch(`${API_URL}/api/farms`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+      body: JSON.stringify(farmData),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to create farm');
+    }
+    const data = await response.json();
+    // Handle successful farm creation (e.g., redirect to farm manager dashboard)
+  } catch (error) {
+    console.error('Error creating farm:', error);
+    // Handle error
+  }
+};
+
 const AddNewFarm = () => {
   const navigate = useNavigate();
   const [farm, setFarm] = useState({

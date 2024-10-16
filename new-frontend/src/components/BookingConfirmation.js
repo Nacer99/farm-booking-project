@@ -4,6 +4,29 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/BookingConfirmation.css';
 
+const confirmBooking = async () => {
+  try {
+    const response = await fetch(`${API_URL}/api/bookings/confirm`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        bookingId: booking.id,
+        clientEmail: email,
+      }),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to confirm booking');
+    }
+    const data = await response.json();
+    setConfirmed(true);
+  } catch (error) {
+    console.error('Error confirming booking:', error);
+    // Handle error
+  }
+};
+
 const BookingConfirmation = () => {
   const [email, setEmail] = useState('');
   const location = useLocation();

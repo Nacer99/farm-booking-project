@@ -4,6 +4,39 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../styles/FarmEditForm.css';
 
+import { API_URL } from '../config';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+
+function FarmEditForm() {
+  const { id } = useParams();
+  const [farmData, setFarmData] = useState(null);
+
+  const fetchFarmDetails = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/farms/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch farm details');
+      }
+      const data = await response.json();
+      setFarmData(data);
+    } catch (error) {
+      console.error('Error fetching farm details:', error);
+      // Handle error
+    }
+  };
+
+  useEffect(() => {
+    fetchFarmDetails();
+  }, [id]);
+
+  // Rest of your component code, including form and handleSubmit function...
+}
+
 const FarmEditForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();

@@ -4,6 +4,46 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/EditFarm.css';
 
+const fetchFarmDetails = async () => {
+  try {
+    const response = await fetch(`${API_URL}/api/farms/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch farm details');
+    }
+    const data = await response.json();
+    setFarmData(data);
+  } catch (error) {
+    console.error('Error fetching farm details:', error);
+    // Handle error
+  }
+};
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await fetch(`${API_URL}/api/farms/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+      body: JSON.stringify(farmData),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to update farm');
+    }
+    const data = await response.json();
+    // Handle successful farm update (e.g., show success message, redirect)
+  } catch (error) {
+    console.error('Error updating farm:', error);
+    // Handle error
+  }
+};
+
 const EditFarm = () => {
   const [farms, setFarms] = useState([]);
 
