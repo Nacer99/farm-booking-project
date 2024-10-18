@@ -6,7 +6,6 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../styles/BookFarm.css';
 
-import { API_URL } from '../config';
 import { useState, useEffect } from 'react';
 
 function BookFarm() {
