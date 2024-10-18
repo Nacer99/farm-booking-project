@@ -1,43 +1,43 @@
-// eslint-disable-next-line no-unused-vars
 import { API_URL } from '../config';
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/BookingConfirmation.css';
 
-const confirmBooking = async () => {
-  try {
-    const response = await fetch(`${API_URL}/api/bookings/confirm`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        bookingId: booking.id,
-        clientEmail: email,
-      }),
-    });
-    if (!response.ok) {
-      throw new Error('Failed to confirm booking');
-    }
-    const data = await response.json();
-    setConfirmed(true);
-  } catch (error) {
-    console.error('Error confirming booking:', error);
-    // Handle error
-  }
-};
-
 const BookingConfirmation = () => {
   const [email, setEmail] = useState('');
+  const [confirmed, setConfirmed] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { totalMeals, bookedMeals, farmName, bookingDate } = location.state || {};
+  const { totalMeals, bookedMeals, farmName, bookingDate, bookingId } = location.state || {};
+
+  const confirmBooking = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/bookings/confirm`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          bookingId: bookingId,
+          clientEmail: email,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to confirm booking');
+      }
+      await response.json();
+      setConfirmed(true);
+    } catch (error) {
+      console.error('Error confirming booking:', error);
+      // Handle error (e.g., show error message to user)
+    }
+  };
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
     try {
-      // TODO: Implement API call to send confirmation email
-      const response = await fetch('/api/send-confirmation', {
+      await confirmBooking();
+      const response = await fetch(`${API_URL}/api/send-confirmation`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -75,6 +75,7 @@ const BookingConfirmation = () => {
         />
         <button type="submit">Envoyer</button>
       </form>
+      {confirmed && <p>Votre réservation a été confirmée. Merci !</p>}
     </div>
   );
 };

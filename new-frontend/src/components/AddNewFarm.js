@@ -1,34 +1,11 @@
-// eslint-disable-next-line no-unused-vars
 import { API_URL } from '../config';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/AddNewFarm.css';
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const response = await fetch(`${API_URL}/api/farms`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
-      body: JSON.stringify(farmData),
-    });
-    if (!response.ok) {
-      throw new Error('Failed to create farm');
-    }
-    const data = await response.json();
-    // Handle successful farm creation (e.g., redirect to farm manager dashboard)
-  } catch (error) {
-    console.error('Error creating farm:', error);
-    // Handle error
-  }
-};
-
 const AddNewFarm = () => {
   const navigate = useNavigate();
-  const [farm, setFarm] = useState({
+  const [farmData, setFarmData] = useState({
     name: '',
     description: '',
     photos: [],
@@ -41,33 +18,49 @@ const AddNewFarm = () => {
 
   const handleChange = (e, index) => {
     if (e.target.name.startsWith('meal')) {
-      const newMeals = [...farm.meals];
+      const newMeals = [...farmData.meals];
       newMeals[index] = { ...newMeals[index], [e.target.name.split('-')[1]]: e.target.value };
-      setFarm({ ...farm, meals: newMeals });
+      setFarmData({ ...farmData, meals: newMeals });
     } else {
-      setFarm({ ...farm, [e.target.name]: e.target.value });
+      setFarmData({ ...farmData, [e.target.name]: e.target.value });
     }
   };
 
   const handlePhotoUpload = (e) => {
-    setFarm({ ...farm, photos: [...farm.photos, ...e.target.files] });
+    setFarmData({ ...farmData, photos: [...farmData.photos, ...e.target.files] });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Send farm data to your API
-    // await api.addFarm(farm);
-    navigate('/manager');
+    try {
+      const response = await fetch(`${API_URL}/api/farms`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(farmData),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to create farm');
+      }
+      const data = await response.json();
+      // Handle successful farm creation
+      navigate('/manager');
+    } catch (error) {
+      console.error('Error creating farm:', error);
+      // Handle error (e.g., show error message to user)
+    }
   };
 
   return (
     <div className="add-new-farm">
       <h2>Add a New Farm</h2>
       <form onSubmit={handleSubmit}>
-        <input type="text" name="name" value={farm.name} onChange={handleChange} placeholder="Farm Name" required />
-        <textarea name="description" value={farm.description} onChange={handleChange} placeholder="Farm Description" required />
+        <input type="text" name="name" value={farmData.name} onChange={handleChange} placeholder="Farm Name" required />
+        <textarea name="description" value={farmData.description} onChange={handleChange} placeholder="Farm Description" required />
         <input type="file" multiple onChange={handlePhotoUpload} accept="image/*" />
-        {farm.meals.map((meal, index) => (
+        {farmData.meals.map((meal, index) => (
           <div key={index} className="meal-section">
             <h3>Meal {index + 1}</h3>
             <input type="text" name={`meal-name`} value={meal.name} onChange={(e) => handleChange(e, index)} placeholder="Meal Name" required />

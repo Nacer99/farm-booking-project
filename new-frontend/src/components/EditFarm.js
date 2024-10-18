@@ -1,71 +1,92 @@
-// eslint-disable-next-line no-unused-vars
 import { API_URL } from '../config';
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import '../styles/EditFarm.css';
-
-const fetchFarmDetails = async () => {
-  try {
-    const response = await fetch(`${API_URL}/api/farms/${id}`, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Failed to fetch farm details');
-    }
-    const data = await response.json();
-    setFarmData(data);
-  } catch (error) {
-    console.error('Error fetching farm details:', error);
-    // Handle error
-  }
-};
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const response = await fetch(`${API_URL}/api/farms/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
-      body: JSON.stringify(farmData),
-    });
-    if (!response.ok) {
-      throw new Error('Failed to update farm');
-    }
-    const data = await response.json();
-    // Handle successful farm update (e.g., show success message, redirect)
-  } catch (error) {
-    console.error('Error updating farm:', error);
-    // Handle error
-  }
-};
 
 const EditFarm = () => {
   const [farms, setFarms] = useState([]);
+  const [farmData, setFarmData] = useState(null);
+  const { id } = useParams();
 
   useEffect(() => {
-    // TODO: Fetch farms from your API
-    // For now, we'll use dummy data
-    setFarms([
-      { id: 1, name: "Green Acres Farm" },
-      { id: 2, name: "Sunset Valley Ranch" },
-      { id: 3, name: "Mountain View Orchard" },
-    ]);
-  }, []);
+    fetchFarms();
+    if (id) {
+      fetchFarmDetails();
+    }
+  }, [id]);
 
-  const handleDelete = async (id) => {
+  const fetchFarms = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/farms`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch farms');
+      }
+      const data = await response.json();
+      setFarms(data);
+    } catch (error) {
+      console.error('Error fetching farms:', error);
+      // Handle error (e.g., show error message to user)
+    }
+  };
+
+  const fetchFarmDetails = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/farms/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch farm details');
+      }
+      const data = await response.json();
+      setFarmData(data);
+    } catch (error) {
+      console.error('Error fetching farm details:', error);
+      // Handle error (e.g., show error message to user)
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${API_URL}/api/farms/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(farmData),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update farm');
+      }
+      await response.json();
+      // Handle successful farm update (e.g., show success message, redirect)
+    } catch (error) {
+      console.error('Error updating farm:', error);
+      // Handle error (e.g., show error message to user)
+    }
+  };
+
+  const handleDelete = async (farmId) => {
     if (window.confirm("Are you sure you want to delete this farm?")) {
       try {
-        // TODO: Send delete request to your API
-        // For now, we'll just remove it from the local state
-        setFarms(farms.filter(farm => farm.id !== id));
-        // In a real application, you'd make an API call here:
-        // await api.deleteFarm(id);
-        console.log(`Farm with id ${id} deleted`);
+        const response = await fetch(`${API_URL}/api/farms/${farmId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error('Failed to delete farm');
+        }
+        setFarms(farms.filter(farm => farm.id !== farmId));
+        console.log(`Farm with id ${farmId} deleted`);
       } catch (error) {
         console.error("Error deleting farm:", error);
         // Handle error (e.g., show error message to user)
@@ -87,6 +108,12 @@ const EditFarm = () => {
           </li>
         ))}
       </ul>
+      {farmData && (
+        <form onSubmit={handleSubmit}>
+          {/* Add form fields for editing farm data */}
+          <button type="submit">Update Farm</button>
+        </form>
+      )}
       <Link to="/manager" className="back-button">Back to Dashboard</Link>
     </div>
   );
