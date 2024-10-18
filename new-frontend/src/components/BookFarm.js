@@ -1,22 +1,22 @@
-// eslint-disable-next-line no-unused-vars
 import { API_URL } from '../config';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../styles/BookFarm.css';
 
 function BookFarm() {
-  const [farms, setFarms] = useState([]);
+  const [date, setDate] = useState(new Date());
+  const [availableFarms, setAvailableFarms] = useState([]);
 
-  const fetchAvailableFarms = async () => {
+  const fetchAvailableFarms = async (selectedDate) => {
     try {
-      const response = await fetch(`${API_URL}/api/farms/available`);
+      const response = await fetch(`${API_URL}/api/farms/available?date=${selectedDate.toISOString()}`);
       if (!response.ok) {
         throw new Error('Failed to fetch available farms');
       }
       const data = await response.json();
-      setFarms(data);
+      setAvailableFarms(data);
     } catch (error) {
       console.error('Error fetching available farms:', error);
       // Handle error (e.g., show error message to user)
@@ -24,24 +24,12 @@ function BookFarm() {
   };
 
   useEffect(() => {
-    fetchAvailableFarms();
-  }, []);
-
-  // Rest of your component code...
-}
-
-const BookFarm = () => {
-  const [date, setDate] = useState(new Date());
-  const [availableFarms, setAvailableFarms] = useState([]);
+    fetchAvailableFarms(date);
+  }, [date]);
 
   const onDateChange = (newDate) => {
     setDate(newDate);
-    // TODO: Fetch available farms for this date from your API
-    setAvailableFarms([
-      { id: 1, name: "Green Acres Farm", photo: "https://example.com/farm1.jpg" },
-      { id: 2, name: "Sunset Valley Ranch", photo: "https://example.com/farm2.jpg" },
-      // Add more dummy farms as needed
-    ]);
+    fetchAvailableFarms(newDate);
   };
 
   return (
@@ -60,6 +48,6 @@ const BookFarm = () => {
       </div>
     </div>
   );
-};
+}
 
 export default BookFarm;
