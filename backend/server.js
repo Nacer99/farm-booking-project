@@ -8,19 +8,31 @@ const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
-// Middleware
-app.use(cors({ origin: process.env.FRONTEND_URL }));
-app.use(express.json());
+// CORS Configuration
+const corsOptions = {
+  origin: process.env.FRONTEND_URL, // Allow requests from your frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow these methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allow these headers
+  credentials: true, // Allow credentials (if needed)
+};
+
+app.use(cors(corsOptions)); // Use CORS middleware with options
+app.use(express.json()); // Middleware to parse JSON requests
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
-.then(() => console.log('Connected to MongoDB'))
-.catch(err => console.error('MongoDB connection error:', err));
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
 // Routes
 app.use('/api/farms', farmRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/auth', authRoutes);
+
+// Optional: Root route
+app.get('/', (req, res) => {
+  res.send('Welcome to the Farm Booking API');
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
