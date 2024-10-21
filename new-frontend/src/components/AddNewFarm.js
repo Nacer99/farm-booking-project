@@ -15,6 +15,8 @@ const AddNewFarm = () => {
       { name: '', description: '', availability: 0, price: 0 }
     ]
   });
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e, index) => {
     if (e.target.name.startsWith('meal')) {
@@ -32,30 +34,47 @@ const AddNewFarm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+    console.log('Submitting farm data:', farmData);
+
     try {
+      const formData = new FormData();
+      formData.append('name', farmData.name);
+      formData.append('description', farmData.description);
+      farmData.photos.forEach((photo, index) => {
+        formData.append(`photos`, photo);
+      });
+      formData.append('meals', JSON.stringify(farmData.meals));
+
       const response = await fetch(`${API_URL}/api/farms`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
-        body: JSON.stringify(farmData),
+        body: formData,
       });
+
       if (!response.ok) {
-        throw new Error('Failed to create farm');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to create farm');
       }
+
       const data = await response.json();
-      // Handle successful farm creation
+      console.log('Farm created successfully:', data);
       navigate('/manager');
     } catch (error) {
       console.error('Error creating farm:', error);
-      // Handle error (e.g., show error message to user)
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="add-new-farm">
       <h2>Add a New Farm</h2>
+      {error && <div className="error-message">{error}</div>}
       <form onSubmit={handleSubmit}>
         <input type="text" name="name" value={farmData.name} onChange={handleChange} placeholder="Farm Name" required />
         <textarea name="description" value={farmData.description} onChange={handleChange} placeholder="Farm Description" required />
@@ -69,7 +88,9 @@ const AddNewFarm = () => {
             <input type="number" name={`meal-price`} value={meal.price} onChange={(e) => handleChange(e, index)} placeholder="Price in MAD" required />
           </div>
         ))}
-        <button type="submit">Confirm and List Farm</button>
+        <button type="submit" disabled={isLoading}>
+          {isLoading ? 'Creating Farm...' : 'Confirm and List Farm'}
+        </button>
       </form>
     </div>
   );
