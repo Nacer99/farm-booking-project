@@ -1,20 +1,21 @@
 const mongoose = require('mongoose');
 
 const mealSchema = new mongoose.Schema({
-  name: String,
-  description: String,
-  price: Number,
-  availability: Number,
+  name: { type: String, required: true },
+  description: { type: String, required: true },
+  price: { type: Number, required: true },
+  availability: { type: Number, required: true },
 });
 
 const farmSchema = new mongoose.Schema({
-  name: String,
-  description: String,
-  photo: String,
+  name: { type: String, required: true },
+  description: { type: String, required: true },
+  photos: { type: [String], required: true }, // Changed to an array for multiple photos
   meals: [mealSchema],
   manager: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true, // Assuming a manager is required
   },
 });
 
