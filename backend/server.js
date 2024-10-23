@@ -12,8 +12,8 @@ const app = express();
 const corsOptions = {
   origin: (origin, callback) => {
     const allowedOrigins = [
-      'http://localhost:3000', // Local development
-      'https://farm-booking-project.netlify.app' // Production
+      process.env.FRONTEND_URL, // Production URL from .env
+      'http://localhost:3000' // Local development
     ];
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true); // Allow the request
