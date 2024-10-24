@@ -20,6 +20,12 @@ const corsOptions = {
 app.use(cors(corsOptions)); // Use CORS middleware with options
 app.use(express.json()); // Middleware to parse JSON requests
 
+// Log incoming requests
+app.use((req, res, next) => {
+  console.log(`Incoming request: ${req.method} ${req.url}`);
+  next();
+});
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
@@ -33,6 +39,17 @@ app.use('/api/auth', authRoutes);
 // Optional: Root route
 app.get('/', (req, res) => {
   res.send('Welcome to the Farm Booking API');
+});
+
+// Test database connection route
+app.get('/test-db', async (req, res) => {
+  try {
+    const farms = await Farm.find(); // Assuming you have a Farm model
+    res.json(farms);
+  } catch (error) {
+    console.error('Database connection error:', error); // Log the error
+    res.status(500).json({ message: 'Database connection error', error });
+  }
 });
 
 // Error handling middleware
