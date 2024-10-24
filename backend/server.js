@@ -11,9 +11,10 @@ const app = express();
 // CORS Configuration
 const corsOptions = {
   origin: (origin, callback) => {
+    console.log('Incoming origin:', origin); // Log the incoming origin
     const allowedOrigins = [
-      process.env.FRONTEND_URL, // Production URL from .env
-      'http://localhost:3000' // Local development
+      process.env.FRONTEND_URL,
+      'http://localhost:3000'
     ];
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true); // Allow the request
@@ -21,9 +22,9 @@ const corsOptions = {
       callback(new Error('Not allowed by CORS')); // Block the request
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow these methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allow these headers
-  credentials: true, // Allow credentials (if needed)
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
 };
 
 // Enable preflight for all routes
