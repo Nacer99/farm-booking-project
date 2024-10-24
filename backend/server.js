@@ -10,26 +10,13 @@ const app = express();
 
 // CORS Configuration
 const corsOptions = {
-  origin: (origin, callback) => {
-    console.log('Incoming origin:', origin); // Log the incoming origin
-    const allowedOrigins = [
-      process.env.FRONTEND_URL,
-      'http://localhost:3000'
-    ];
-    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-      callback(null, true); // Allow the request
-    } else {
-      callback(new Error('Not allowed by CORS')); // Block the request
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
+  origin: '*', // Temporarily allow all origins for testing
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow these methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allow these headers
+  credentials: true, // Allow credentials (if needed)
 };
 
-// Enable preflight for all routes
-app.options('*', cors(corsOptions)); // This line ensures preflight requests are handled
-
+// Enable CORS for all routes
 app.use(cors(corsOptions)); // Use CORS middleware with options
 app.use(express.json()); // Middleware to parse JSON requests
 
@@ -50,7 +37,7 @@ app.get('/', (req, res) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('Error details:', err); // Log the error details
   res.status(500).json({ message: 'Something went wrong!' });
 });
 
