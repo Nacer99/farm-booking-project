@@ -8,7 +8,12 @@ function HomePage() {
 
   const fetchFarms = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/farms`);
+      const response = await fetch(`${API_URL}/api/farms`, {
+        // No Authorization header needed since no user is logged in
+        // headers: {
+        //   'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        // },
+      });
       if (!response.ok) {
         throw new Error('Failed to fetch farms');
       }

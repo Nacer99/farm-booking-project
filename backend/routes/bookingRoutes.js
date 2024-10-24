@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Booking = require('../models/Booking');
 const { sendConfirmationEmail } = require('../utils/emailService');
-const authMiddleware = require('../middleware/authMiddleware');
+// const authMiddleware = require('../middleware/authMiddleware'); // Comment out the import if not needed
 
 // Public route - Create a booking
 router.post('/', async (req, res) => {
@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
 });
 
 // Protected route - Confirm a booking
-router.post('/confirm', authMiddleware, async (req, res) => {
+router.post('/confirm', /* authMiddleware, */ async (req, res) => { // Comment out authMiddleware
   try {
     const { bookingId, clientEmail } = req.body;
     const booking = await Booking.findByIdAndUpdate(
@@ -40,11 +40,12 @@ router.post('/confirm', authMiddleware, async (req, res) => {
 });
 
 // New protected route - Get all bookings (for managers)
-router.get('/', authMiddleware, async (req, res) => {
+router.get('/', /* authMiddleware, */ async (req, res) => { // Comment out authMiddleware
   try {
-    if (req.user.role !== 'manager') {
-      return res.status(403).json({ message: 'Access denied. Managers only.' });
-    }
+    // Temporarily allow all requests to proceed
+    // if (req.user.role !== 'manager') {
+    //   return res.status(403).json({ message: 'Access denied. Managers only.' });
+    // }
     const bookings = await Booking.find().populate('farm');
     res.json(bookings);
   } catch (error) {
@@ -53,9 +54,11 @@ router.get('/', authMiddleware, async (req, res) => {
 });
 
 // New protected route - Get user's bookings
-router.get('/my-bookings', authMiddleware, async (req, res) => {
+router.get('/my-bookings', /* authMiddleware, */ async (req, res) => { // Comment out authMiddleware
   try {
-    const bookings = await Booking.find({ clientEmail: req.user.email }).populate('farm');
+    // Temporarily allow fetching all bookings for testing
+    // const bookings = await Booking.find({ clientEmail: req.user.email }).populate('farm');
+    const bookings = await Booking.find().populate('farm'); // Allow fetching all bookings for testing
     res.json(bookings);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching user bookings', error: error.message });

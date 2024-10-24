@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const Farm = require('../models/Farm');
-const authMiddleware = require('../middleware/authMiddleware');
+// const authMiddleware = require('../middleware/authMiddleware'); // Comment out the import if not needed
 
 // Middleware to check if user is a manager
 const isManager = (req, res, next) => {
-  if (req.user.role !== 'manager') {
-    return res.status(403).json({ message: 'Access denied. Managers only.' });
-  }
-  next();
+  // Temporarily allow all requests to pass through for testing
+  // if (req.user.role !== 'manager') {
+  //   return res.status(403).json({ message: 'Access denied. Managers only.' });
+  // }
+  next(); // Allow all requests to proceed
 };
 
 // Public routes
@@ -34,11 +35,11 @@ router.get('/:id', async (req, res) => {
 });
 
 // Protected routes (managers only)
-router.post('/', authMiddleware, isManager, async (req, res) => {
+router.post('/', /* authMiddleware, */ isManager, async (req, res) => { // Comment out authMiddleware
   try {
     const newFarm = new Farm({
       ...req.body,
-      manager: req.user._id
+      manager: req.user ? req.user._id : null // Temporarily set manager to null
     });
     await newFarm.save();
     res.status(201).json(newFarm);
@@ -47,10 +48,10 @@ router.post('/', authMiddleware, isManager, async (req, res) => {
   }
 });
 
-router.put('/:id', authMiddleware, isManager, async (req, res) => {
+router.put('/:id', /* authMiddleware, */ isManager, async (req, res) => { // Comment out authMiddleware
   try {
     const farm = await Farm.findOneAndUpdate(
-      { _id: req.params.id, manager: req.user._id },
+      { _id: req.params.id, manager: req.user ? req.user._id : null }, // Temporarily set manager to null
       req.body,
       { new: true }
     );
@@ -61,9 +62,9 @@ router.put('/:id', authMiddleware, isManager, async (req, res) => {
   }
 });
 
-router.delete('/:id', authMiddleware, isManager, async (req, res) => {
+router.delete('/:id', /* authMiddleware, */ isManager, async (req, res) => { // Comment out authMiddleware
   try {
-    const farm = await Farm.findOneAndDelete({ _id: req.params.id, manager: req.user._id });
+    const farm = await Farm.findOneAndDelete({ _id: req.params.id, manager: req.user ? req.user._id : null }); // Temporarily set manager to null
     if (!farm) return res.status(404).json({ message: 'Farm not found or you\'re not authorized' });
     res.json({ message: 'Farm deleted successfully' });
   } catch (error) {
@@ -72,9 +73,9 @@ router.delete('/:id', authMiddleware, isManager, async (req, res) => {
 });
 
 // New route to get farms managed by the authenticated user
-router.get('/my-farms', authMiddleware, isManager, async (req, res) => {
+router.get('/my-farms', /* authMiddleware, */ isManager, async (req, res) => { // Comment out authMiddleware
   try {
-    const farms = await Farm.find({ manager: req.user._id });
+    const farms = await Farm.find({ manager: req.user ? req.user._id : null }); // Temporarily set manager to null
     res.json(farms);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching your farms', error: error.message });

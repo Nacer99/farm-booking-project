@@ -42,15 +42,16 @@ const AddNewFarm = () => {
       const formData = new FormData();
       formData.append('name', farmData.name);
       formData.append('description', farmData.description);
-      farmData.photos.forEach((photo, index) => {
-        formData.append(`photos`, photo);
+      farmData.photos.forEach((photo) => {
+        formData.append('photos', photo);
       });
       formData.append('meals', JSON.stringify(farmData.meals));
 
       const response = await fetch(`${API_URL}/api/farms`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          // Remove the Authorization header since no user is logged in
+          // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
         body: formData,
       });

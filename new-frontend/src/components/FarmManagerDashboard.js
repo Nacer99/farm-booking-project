@@ -9,9 +9,10 @@ function FarmManagerDashboard() {
   const fetchManagerFarms = async () => {
     try {
       const response = await fetch(`${API_URL}/api/farms/manager`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
+        // Remove the Authorization header since no user is logged in
+        // headers: {
+        //   'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        // },
       });
       if (!response.ok) {
         throw new Error('Failed to fetch manager farms');

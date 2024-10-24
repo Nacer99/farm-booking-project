@@ -18,9 +18,10 @@ const EditFarm = () => {
   const fetchFarms = async () => {
     try {
       const response = await fetch(`${API_URL}/api/farms`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
+        // Remove the Authorization header since no user is logged in
+        // headers: {
+        //   'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        // },
       });
       if (!response.ok) {
         throw new Error('Failed to fetch farms');
@@ -36,9 +37,10 @@ const EditFarm = () => {
   const fetchFarmDetails = async () => {
     try {
       const response = await fetch(`${API_URL}/api/farms/${id}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
+        // Remove the Authorization header since no user is logged in
+        // headers: {
+        //   'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        // },
       });
       if (!response.ok) {
         throw new Error('Failed to fetch farm details');
@@ -58,7 +60,8 @@ const EditFarm = () => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          // Remove the Authorization header since no user is logged in
+          // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
         body: JSON.stringify(farmData),
       });
@@ -78,9 +81,10 @@ const EditFarm = () => {
       try {
         const response = await fetch(`${API_URL}/api/farms/${farmId}`, {
           method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          },
+          // Remove the Authorization header since no user is logged in
+          // headers: {
+          //   'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          // },
         });
         if (!response.ok) {
           throw new Error('Failed to delete farm');

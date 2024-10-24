@@ -16,6 +16,8 @@ const BookingConfirmation = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          // Remove Authorization header since no user is logged in
+          // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
         body: JSON.stringify({
           bookingId: bookingId,
@@ -41,6 +43,8 @@ const BookingConfirmation = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          // Remove Authorization header since no user is logged in
+          // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
         body: JSON.stringify({ email, totalMeals, bookedMeals, farmName, bookingDate }),
       });

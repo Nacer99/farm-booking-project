@@ -14,7 +14,12 @@ const FarmPage = () => {
 
   const fetchFarmDetails = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/farms/${id}`);
+      const response = await fetch(`${API_URL}/api/farms/${id}`, {
+        // Remove the Authorization header since no user is logged in
+        // headers: {
+        //   'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        // },
+      });
       if (!response.ok) {
         throw new Error('Failed to fetch farm details');
       }
@@ -57,6 +62,8 @@ const FarmPage = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          // Remove the Authorization header since no user is logged in
+          // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
         body: JSON.stringify({
           farmId: id,

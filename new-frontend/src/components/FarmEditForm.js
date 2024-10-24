@@ -4,26 +4,24 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../styles/FarmEditForm.css';
 
-import { API_URL } from '../config';
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-
-function FarmEditForm() {
+const FarmEditForm = () => {
   const { id } = useParams();
-  const [farmData, setFarmData] = useState(null);
+  const navigate = useNavigate();
+  const [farm, setFarm] = useState(null);
 
   const fetchFarmDetails = async () => {
     try {
       const response = await fetch(`${API_URL}/api/farms/${id}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
+        // Remove the Authorization header since no user is logged in
+        // headers: {
+        //   'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        // },
       });
       if (!response.ok) {
         throw new Error('Failed to fetch farm details');
       }
       const data = await response.json();
-      setFarmData(data);
+      setFarm(data);
     } catch (error) {
       console.error('Error fetching farm details:', error);
       // Handle error
@@ -32,20 +30,6 @@ function FarmEditForm() {
 
   useEffect(() => {
     fetchFarmDetails();
-  }, [id]);
-
-  // Rest of your component code, including form and handleSubmit function...
-}
-
-const FarmEditForm = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [farm, setFarm] = useState(null);
-
-  useEffect(() => {
-    // TODO: Fetch farm data from your API
-    // const fetchedFarm = await api.getFarm(id);
-    // setFarm(fetchedFarm);
   }, [id]);
 
   const handleChange = (e, index) => {
@@ -64,16 +48,46 @@ const FarmEditForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Send updated farm data to your API
-    // await api.updateFarm(id, farm);
-    navigate('/edit-farm');
+    try {
+      const response = await fetch(`${API_URL}/api/farms/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          // Remove the Authorization header since no user is logged in
+          // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(farm),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update farm');
+      }
+      await response.json();
+      // Handle successful farm update (e.g., show success message, redirect)
+      navigate('/edit-farm');
+    } catch (error) {
+      console.error('Error updating farm:', error);
+      // Handle error (e.g., show error message to user)
+    }
   };
 
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this farm?')) {
-      // TODO: Send delete request to your API
-      // await api.deleteFarm(id);
-      navigate('/edit-farm');
+      try {
+        const response = await fetch(`${API_URL}/api/farms/${id}`, {
+          method: 'DELETE',
+          // Remove the Authorization header since no user is logged in
+          // headers: {
+          //   'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          // },
+        });
+        if (!response.ok) {
+          throw new Error('Failed to delete farm');
+        }
+        navigate('/edit-farm');
+      } catch (error) {
+        console.error('Error deleting farm:', error);
+        // Handle error (e.g., show error message to user)
+      }
     }
   };
 
