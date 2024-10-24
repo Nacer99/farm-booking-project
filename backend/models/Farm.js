@@ -10,13 +10,25 @@ const mealSchema = new mongoose.Schema({
 const farmSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
-  photos: { type: [String], required: true }, // Changed to an array for multiple photos
+  photos: { type: [String], required: true },
   meals: [mealSchema],
   manager: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true, // Assuming a manager is required
+    required: true,
+    default: '507f1f77bcf86cd799439011' // Temporary default ObjectId for testing
   },
+}, {
+  timestamps: true // Adds createdAt and updatedAt fields
 });
+
+// Add some helper methods for validation
+farmSchema.statics.createTestFarm = async function(farmData) {
+  const farm = new this({
+    ...farmData,
+    manager: '507f1f77bcf86cd799439011' // Use the same testing ObjectId
+  });
+  return farm.save();
+};
 
 module.exports = mongoose.model('Farm', farmSchema);
