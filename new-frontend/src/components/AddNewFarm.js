@@ -18,41 +18,71 @@ const AddNewFarm = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e, index) => {
-    if (e.target.name.startsWith('meal')) {
-      const newMeals = [...farmData.meals];
-      newMeals[index] = { ...newMeals[index], [e.target.name.split('-')[1]]: e.target.value };
-      setFarmData({ ...farmData, meals: newMeals });
-    } else {
-      setFarmData({ ...farmData, [e.target.name]: e.target.value });
-    }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFarmData({ ...farmData, [name]: value });
+  };
+
+  const handleMealChange = (index, field, value) => {
+    const newMeals = [...farmData.meals];
+    newMeals[index] = {
+      ...newMeals[index],
+      [field]: field === 'price' || field === 'availability' ? Number(value) : value
+    };
+    setFarmData({ ...farmData, meals: newMeals });
   };
 
   const handlePhotoUpload = (e) => {
-    setFarmData({ ...farmData, photos: [...farmData.photos, ...e.target.files] });
+    const files = Array.from(e.target.files);
+    setFarmData({ ...farmData, photos: files });
+  };
+
+  const validateForm = () => {
+    if (!farmData.name || !farmData.description) {
+      throw new Error('Farm name and description are required');
+    }
+
+    if (farmData.photos.length === 0) {
+      throw new Error('At least one photo is required');
+    }
+
+    const invalidMeals = farmData.meals.some(
+      meal => !meal.name || !meal.description || meal.price <= 0 || meal.availability < 0
+    );
+
+    if (invalidMeals) {
+      throw new Error('All meals must have valid name, description, price, and availability');
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
-    console.log('Submitting farm data:', farmData);
 
     try {
+      // Validate form data
+      validateForm();
+
+      // Create FormData object
       const formData = new FormData();
       formData.append('name', farmData.name);
       formData.append('description', farmData.description);
-      farmData.photos.forEach((photo) => {
-        formData.append('photos', photo);
+      
+      // Append each photo individually
+      farmData.photos.forEach((photo, index) => {
+        formData.append(`photos`, photo);
       });
-      formData.append('meals', JSON.stringify(farmData.meals));
+
+      // Append meals as an array of objects
+      farmData.meals.forEach((meal, index) => {
+        Object.keys(meal).forEach(key => {
+          formData.append(`meals[${index}][${key}]`, meal[key]);
+        });
+      });
 
       const response = await fetch(`${API_URL}/api/farms`, {
         method: 'POST',
-        headers: {
-          // Remove the Authorization header since no user is logged in
-          // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
         body: formData,
       });
 
@@ -77,16 +107,60 @@ const AddNewFarm = () => {
       <h2>Add a New Farm</h2>
       {error && <div className="error-message">{error}</div>}
       <form onSubmit={handleSubmit}>
-        <input type="text" name="name" value={farmData.name} onChange={handleChange} placeholder="Farm Name" required />
-        <textarea name="description" value={farmData.description} onChange={handleChange} placeholder="Farm Description" required />
-        <input type="file" multiple onChange={handlePhotoUpload} accept="image/*" />
+        <input
+          type="text"
+          name="name"
+          value={farmData.name}
+          onChange={handleChange}
+          placeholder="Farm Name"
+          required
+        />
+        <textarea
+          name="description"
+          value={farmData.description}
+          onChange={handleChange}
+          placeholder="Farm Description"
+          required
+        />
+        <input
+          type="file"
+          multiple
+          onChange={handlePhotoUpload}
+          accept="image/*"
+          required
+        />
         {farmData.meals.map((meal, index) => (
           <div key={index} className="meal-section">
             <h3>Meal {index + 1}</h3>
-            <input type="text" name={`meal-name`} value={meal.name} onChange={(e) => handleChange(e, index)} placeholder="Meal Name" required />
-            <textarea name={`meal-description`} value={meal.description} onChange={(e) => handleChange(e, index)} placeholder="Meal Description" required />
-            <input type="number" name={`meal-availability`} value={meal.availability} onChange={(e) => handleChange(e, index)} placeholder="Availability" required />
-            <input type="number" name={`meal-price`} value={meal.price} onChange={(e) => handleChange(e, index)} placeholder="Price in MAD" required />
+            <input
+              type="text"
+              value={meal.name}
+              onChange={(e) => handleMealChange(index, 'name', e.target.value)}
+              placeholder="Meal Name"
+              required
+            />
+            <textarea
+              value={meal.description}
+              onChange={(e) => handleMealChange(index, 'description', e.target.value)}
+              placeholder="Meal Description"
+              required
+            />
+            <input
+              type="number"
+              value={meal.availability}
+              onChange={(e) => handleMealChange(index, 'availability', e.target.value)}
+              placeholder="Availability"
+              min="0"
+              required
+            />
+            <input
+              type="number"
+              value={meal.price}
+              onChange={(e) => handleMealChange(index, 'price', e.target.value)}
+              placeholder="Price in MAD"
+              min="0"
+              required
+            />
           </div>
         ))}
         <button type="submit" disabled={isLoading}>
